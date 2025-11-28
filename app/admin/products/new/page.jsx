@@ -1,77 +1,80 @@
 "use client";
 
 import { useState } from "react";
-import { addAdminProduct } from "@/lib/admin-db.js";
-import { useRouter } from "next/navigation";
 
-export default function NewProduct() {
-  const router = useRouter();
-
+export default function NewProductPage() {
   const [form, setForm] = useState({
     id: "",
+    slug: "",
     name: "",
-    price: "",
-    stock: "",
+    price: 0,
     description: "",
-    image: ""
+    published: true,
+    images: []
   });
 
-  function handleSubmit() {
-    if (!form.id || !form.name) {
-      alert("ID et nom obligatoires.");
-      return;
-    }
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-    addAdminProduct({
-      id: form.id,
-      name: form.name,
-      price: parseFloat(form.price),
-      stock: parseInt(form.stock),
-      description: form.description,
-      image: form.image
+    await fetch("/api/admin/products/new", {
+      method: "POST",
+      body: JSON.stringify(form)
     });
 
-    router.push("/admin/products");
-  }
-
-  function updateField(field, value) {
-    setForm({ ...form, [field]: value });
+    window.location.href = "/admin/products";
   }
 
   return (
-    <div className="px-6 py-16 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Nouveau produit</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Nouveau produit</h1>
 
-      <div className="space-y-4">
-        {[
-          ["id", "ID (slug)"],
-          ["name", "Nom"],
-          ["price", "Prix"],
-          ["stock", "Stock"],
-          ["image", "URL Image"],
-        ].map(([field, label]) => (
-          <input
-            key={field}
-            type="text"
-            placeholder={label}
-            className="w-full p-3 bg-neutral-800 border border-white/10 rounded"
-            onChange={(e) => updateField(field, e.target.value)}
-          />
-        ))}
+      <form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
+        <label>ID</label>
+        <input
+          value={form.id}
+          onChange={(e) => setForm({ ...form, id: e.target.value })}
+        />
 
+        <label>Slug</label>
+        <input
+          value={form.slug}
+          onChange={(e) => setForm({ ...form, slug: e.target.value })}
+        />
+
+        <label>Nom</label>
+        <input
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+
+        <label>Prix</label>
+        <input
+          type="number"
+          value={form.price}
+          onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+        />
+
+        <label>Description</label>
         <textarea
-          placeholder="Description"
-          className="w-full p-3 bg-neutral-800 border border-white/10 rounded"
-          onChange={(e) => updateField("description", e.target.value)}
+          value={form.description}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
         />
 
         <button
-          className="w-full py-3 bg-white text-black rounded"
-          onClick={handleSubmit}
+          type="submit"
+          style={{
+            marginTop: 20,
+            background: "#cc1010",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: 6
+          }}
         >
           Ajouter
         </button>
-      </div>
-    </div>
+      </form>
+    </main>
   );
 }
