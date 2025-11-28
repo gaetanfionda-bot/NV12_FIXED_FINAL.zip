@@ -1,18 +1,18 @@
-import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import "./globals.css";
 
 export const metadata = {
-  title: "Night Vision V12",
-  description: "NV system rebuilt module by module"
+  title: "NIGHT VISION",
+  description: "NV12 e-commerce"
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">
-      <body className="min-h-screen bg-black text-white flex flex-col">
+      <body>
         <Header />
-        <main className="flex-1">{children}</main>
+        <div style={{ padding: "40px" }}>{children}</div>
         <Footer />
       </body>
     </html>
