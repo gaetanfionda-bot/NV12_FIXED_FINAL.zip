@@ -19,4 +19,10 @@
       "price": 149,
       "published": true,
       "description": "Modèle NV-002 - Version légère et améliorée.",
-      "images"
+      "images": [
+        "/products/nv002_1.jpg",
+        "/products/nv002_2.jpg"
+      ]
+    }
+  ]
+}
