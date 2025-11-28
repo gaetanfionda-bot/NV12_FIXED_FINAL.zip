@@ -1,50 +1,52 @@
 "use client";
 
-import Link from "next/link";
-import { getAdminProducts } from "@/lib/admin-db.js";
+import { useState } from "react";
 
-export default function AdminProducts() {
-  const products = getAdminProducts(); // ⭐ PREND LES PRODUITS ADMIN
+export default function AdminLoginPage() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    if (res.ok) {
+      window.location.href = "/admin";
+    } else {
+      setError("Mot de passe incorrect");
+    }
+  };
 
   return (
-    <div className="px-6 py-16">
-      <h1 className="text-4xl font-bold mb-10">Produits</h1>
-
-      <Link
-        href="/admin/products/new"
-        className="px-4 py-2 bg-white text-black rounded mb-6 inline-block"
+    <div className="flex items-center justify-center min-h-screen bg-black text-white px-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-neutral-900 p-8 rounded-xl border border-neutral-700 w-full max-w-sm"
       >
-        Ajouter un produit
-      </Link>
+        <h1 className="text-2xl font-bold mb-4 text-red-600">Admin Login</h1>
 
-      <div className="space-y-6 mt-6">
-        {products.map((p) => (
-          <div
-            key={p.id}
-            className="border border-white/10 bg-neutral-900 p-4 rounded-xl flex justify-between items-center"
-          >
-            <div>
-              <h2 className="text-xl">{p.name}</h2>
-              <p className="text-neutral-400">
-                {p.price}€ — Stock : {p.stock}
-              </p>
-            </div>
+        <input
+          type="password"
+          placeholder="Mot de passe"
+          className="w-full p-3 rounded bg-neutral-800 border border-neutral-700 mb-4"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-            <div className="flex gap-4">
-              <Link href={`/admin/products/${p.id}`} className="text-blue-400">
-                Modifier
-              </Link>
+        {error && <p className="text-red-400 mb-4">{error}</p>}
 
-              <Link
-                href={`/admin/products/delete/${p.id}`}
-                className="text-red-400"
-              >
-                Supprimer
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-red-600 hover:bg-red-700 transition p-3 rounded font-semibold"
+        >
+          Se connecter
+        </button>
+      </form>
     </div>
   );
 }
