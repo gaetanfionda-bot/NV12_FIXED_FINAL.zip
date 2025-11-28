@@ -1,72 +1,36 @@
-"use client";
+import { getAdminOrder } from "@/lib/admin-db";
 
-import { getAdminOrder, updateAdminOrder } from "@/lib/admin-db.js";
-import { useRouter } from "next/navigation";
+export default async function OrderDetailPage({ params }) {
+  const { id } = params;
+  const order = await getAdminOrder(id);
 
-export default function AdminOrderDetails({ params }) {
-  const order = getAdminOrder(params.id);
-  const router = useRouter();
-
-  if (!order)
+  if (!order) {
     return (
-      <div className="p-10">
-        <h1 className="text-4xl font-bold mb-6">Commande introuvable</h1>
-        <p>Aucune commande trouvée avec cet identifiant.</p>
-      </div>
+      <main style={{ padding: 40 }}>
+        <h1>Commande introuvable</h1>
+        <a href="/admin/orders">← Retour</a>
+      </main>
     );
-
-  const nextStatus = (current) => {
-    if (current === "En attente") return "Envoyée";
-    if (current === "Envoyée") return "Terminée";
-    return "Terminée";
-  };
-
-  function updateStatus() {
-    updateAdminOrder(order.id, { status: nextStatus(order.status) });
-    router.push("/admin/orders");
   }
 
   return (
-    <div className="p-10 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-bold mb-6">Commande : {order.id}</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Commande {order.id}</h1>
+      <p>Date : {order.date}</p>
+      <p>Total : {order.total} €</p>
+      <p>Status : {order.status}</p>
 
-      <p className="mb-2">
-        <strong>Client :</strong> {order.customer}
-      </p>
+      <h2 style={{ marginTop: 20 }}>Articles</h2>
 
-      <p className="mb-2">
-        <strong>Total :</strong> {order.total}€
-      </p>
+      {order.items.map((item, idx) => (
+        <div key={idx} style={{ marginBottom: 10 }}>
+          {item.name} – {item.price} € × {item.qty}
+        </div>
+      ))}
 
-      <p className="mb-4">
-        <strong>Statut :</strong>{" "}
-        <span className="text-blue-400">{order.status}</span>
-      </p>
-
-      <h2 className="text-2xl font-semibold mt-6 mb-3">Articles</h2>
-
-      <div className="space-y-3">
-        {order.items.map((item) => (
-          <div
-            key={item.id}
-            className="border border-white/10 bg-neutral-900 p-3 rounded-lg"
-          >
-            <p>
-              <strong>{item.name}</strong>
-            </p>
-            <p>
-              {item.price}€ × {item.quantity}
-            </p>
-          </div>
-        ))}
+      <div style={{ marginTop: 20 }}>
+        <a href="/admin/orders">← Retour</a>
       </div>
-
-      <button
-        className="mt-8 w-full py-3 bg-white text-black rounded-lg hover:bg-neutral-300 transition"
-        onClick={updateStatus}
-      >
-        Passer à : {nextStatus(order.status)}
-      </button>
-    </div>
+    </main>
   );
 }
