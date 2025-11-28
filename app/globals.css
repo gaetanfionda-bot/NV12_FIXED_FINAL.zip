@@ -1,9 +1,90 @@
+/* Reset minimal */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* NIGHT VISION THEME */
+:root {
+  --nv-red: #cc1010;
+  --nv-red-light: #ff2a2a;
+  --nv-black: #0a0a0a;
+  --nv-dark: #111;
+  --nv-gray: #ccc;
+  --nv-font: "Inter", sans-serif;
+}
 
 body {
-  background: #0f0f0f;
+  font-family: var(--nv-font);
+  background: var(--nv-black);
   color: white;
+  padding-bottom: 80px;
+}
+
+/* TITLES */
+h1, h2, h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* LINKS */
+a {
+  color: var(--nv-red-light);
+  text-decoration: none;
+}
+a:hover {
+  opacity: 0.8;
+}
+
+/* BUTTONS NV */
+.nv-btn {
+  display: inline-block;
+  background: var(--nv-red);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: 0.2s;
+}
+.nv-btn:hover {
+  background: var(--nv-red-light);
+  transform: translateY(-2px);
+}
+
+/* CARD PRODUIT */
+.nv-card {
+  background: var(--nv-dark);
+  border: 1px solid #222;
+  padding: 20px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+.nv-card:hover {
+  border-color: var(--nv-red-light);
+}
+
+/* GRID */
+.nv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* HERO */
+.nv-hero {
+  background: url("/hero-nv.jpg") center/cover no-repeat;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  padding-left: 40px;
+}
+
+.nv-hero h1 {
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0px 0px 12px var(--nv-red-light);
 }
