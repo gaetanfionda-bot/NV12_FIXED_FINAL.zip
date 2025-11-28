@@ -1,73 +1,89 @@
 "use client";
 
-import { getCart, removeFromCart, clearCart } from "@/lib/cart";
+import { useEffect, useState } from "react";
 
 export default function CartPage() {
-  const cart = getCart();
+  const [cart, setCart] = useState([]);
+  const delivery = 3.5;
 
-  const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
+  // Chargement du panier depuis localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("nv_cart");
+    if (stored) {
+      setCart(JSON.parse(stored));
+    }
+  }, []);
 
-  if (cart.length === 0)
-    return (
-      <div className="px-6 py-16">
-        <h1 className="text-4xl font-bold mb-10">Panier</h1>
-        <p>Votre panier est vide.</p>
-      </div>
-    );
+  // Suppression d’un produit
+  function removeItem(id) {
+    const updated = cart.filter((item) => item.id !== id);
+    setCart(updated);
+    localStorage.setItem("nv_cart", JSON.stringify(updated));
+  }
+
+  // Total panier
+  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const total = subtotal + (cart.length > 0 ? delivery : 0);
 
   return (
-    <div className="px-6 py-16">
-      <h1 className="text-4xl font-bold mb-10">Panier</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Votre Panier</h1>
 
-      <div className="space-y-6">
+      {cart.length === 0 && <p>Votre panier est vide.</p>}
+
+      <div style={{ marginTop: 20 }}>
         {cart.map((item) => (
           <div
             key={item.id}
-            className="border border-white/10 bg-neutral-900 p-4 rounded-xl flex justify-between items-center"
+            style={{
+              marginBottom: 20,
+              padding: 10,
+              border: "1px solid #ccc",
+              borderRadius: 8,
+            }}
           >
-            <div>
-              <h2 className="text-xl">{item.name}</h2>
-              <p className="text-neutral-400">
-                {item.price}€ × {item.quantity}
-              </p>
-            </div>
+            <strong>{item.name}</strong>
+            <div>{item.price} €</div>
 
             <button
-              className="text-red-400"
-              onClick={() => {
-                removeFromCart(item.id);
-                location.reload();
+              onClick={() => removeItem(item.id)}
+              style={{
+                marginTop: 10,
+                background: "#cc1010",
+                color: "white",
+                padding: "6px 12px",
+                borderRadius: 6,
+                border: "none",
               }}
             >
-              Supprimer
+              Retirer
             </button>
           </div>
         ))}
       </div>
 
-      <div className="mt-10 p-6 bg-neutral-900 rounded-xl border border-white/10">
-        <p className="text-xl mb-4">Total : {total}€</p>
+      {/* Totaux */}
+      {cart.length > 0 && (
+        <div style={{ marginTop: 30 }}>
+          <p>Sous-total : {subtotal.toFixed(2)} €</p>
+          <p>Livraison : {delivery.toFixed(2)} €</p>
+          <h2>Total : {total.toFixed(2)} €</h2>
 
-        <button
-          className="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-neutral-300 transition w-full"
-          onClick={async () => {
-            await fetch("/api/orders/new", {
-              method: "POST",
-              body: JSON.stringify({
-                items: cart,
-                total,
-                customer: "Client Test",
-              }),
-            });
-
-            alert("Commande enregistrée !");
-            clearCart();
-            location.reload();
-          }}
-        >
-          Commander
-        </button>
-      </div>
-    </div>
+          <a
+            href="/checkout"
+            style={{
+              display: "inline-block",
+              marginTop: 20,
+              padding: "10px 20px",
+              background: "#cc1010",
+              color: "white",
+              borderRadius: 8,
+            }}
+          >
+            Passer au paiement →
+          </a>
+        </div>
+      )}
+    </main>
   );
 }
