@@ -1,28 +1,38 @@
-import ProductCard from "@/components/ProductCard";
-import { getAdminProducts } from "@/lib/admin-db.js";
+import { getProducts } from "@/lib/db";
 
 export default async function ShopPage() {
-  // On attend la Promise
-  const products = await getAdminProducts();
+  // Sécurisation : si getProducts() renvoie undefined, null ou un objet → on force []
+  let products = [];
 
-  // On sécurise : si ce n'est pas un array → on force un tableau vide
-  const list = Array.isArray(products) ? products : [];
+  try {
+    const data = await getProducts();
+    if (Array.isArray(data)) {
+      products = data;
+    } else {
+      console.error("⚠️ getProducts() n'a pas renvoyé un tableau :", data);
+    }
+  } catch (err) {
+    console.error("⚠️ Erreur dans getProducts():", err);
+  }
 
   return (
-    <div className="px-6 py-16 max-w-6xl mx-auto">
-      <h1 className="text-4xl font-bold mb-10 text-center">Boutique NV</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Boutique NIGHT VISION</h1>
 
-      {list.length === 0 && (
-        <p className="text-center text-neutral-400">
-          Aucun produit disponible pour le moment.
-        </p>
+      {products.length === 0 && (
+        <p>Aucun produit pour le moment.</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        {list.map((p) => (
-          <ProductCard key={p.id} product={p} />
+      <div style={{ marginTop: 20 }}>
+        {products.map((product) => (
+          <div key={product.id} style={{ marginBottom: 20 }}>
+            <a href={`/shop/${product.slug}`}>
+              <strong>{product.name}</strong>
+            </a>
+            <div>{product.price}€</div>
+          </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 }
