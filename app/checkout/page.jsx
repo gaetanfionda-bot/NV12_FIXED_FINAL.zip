@@ -1,107 +1,71 @@
 "use client";
 
-import { useState } from "react";
-import { getCart, clearCart } from "@/lib/cart";
+import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
-  const cart = getCart();
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [cart, setCart] = useState([]);
+  const delivery = 3.5;
 
-  const [mode, setMode] = useState("guest"); // guest | account
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
-
-  async function submitOrder() {
-    const body = {
-      items: cart,
-      total,
-      mode,
-      userId: mode === "account" ? userId : null,
-    };
-
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-
-    const data = await res.json();
-
-    if (data.error) {
-      alert(data.error);
-      return;
+  // Charger le panier
+  useEffect(() => {
+    const stored = localStorage.getItem("nv_cart");
+    if (stored) {
+      setCart(JSON.parse(stored));
     }
+  }, []);
 
-    clearCart();
-    alert("Commande validée !");
-window.location.href = `/checkout/success?orderId=${data.order.id}`;
+  const subtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+  const total = subtotal + (cart.length > 0 ? delivery : 0);
 
+  function payNow() {
+    // Pas de paiement réel encore → redirection
+    window.location.href = "/checkout/success";
   }
 
   return (
-    <div className="p-10 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-bold mb-6">Paiement</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Récapitulatif de la commande</h1>
 
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Votre panier :</h2>
+      {cart.length === 0 && <p>Votre panier est vide.</p>}
+
+      <div style={{ marginTop: 20 }}>
         {cart.map((item) => (
-          <div key={item.id} className="border border-white/10 p-3 rounded mb-2">
-            <p className="text-lg">{item.name}</p>
-            <p className="text-neutral-400">
-              {item.price}€ × {item.quantity}
-            </p>
+          <div
+            key={item.id}
+            style={{
+              marginBottom: 20,
+              padding: 10,
+              border: "1px solid #ccc",
+              borderRadius: 8,
+            }}
+          >
+            <strong>{item.name}</strong>
+            <div>Prix : {item.price} €</div>
           </div>
         ))}
-
-        <p className="text-2xl font-semibold mt-4">Total : {total}€</p>
       </div>
 
-      {/* Mode de commande */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">Mode de commande :</h2>
-
-        <div className="flex gap-4">
-          <button
-            className={`px-4 py-2 rounded ${
-              mode === "guest" ? "bg-white text-black" : "bg-neutral-700"
-            }`}
-            onClick={() => setMode("guest")}
-          >
-            Invité
-          </button>
+      {cart.length > 0 && (
+        <div style={{ marginTop: 30 }}>
+          <p>Sous-total : {subtotal.toFixed(2)} €</p>
+          <p>Livraison : {delivery.toFixed(2)} €</p>
+          <h2>Total : {total.toFixed(2)} €</h2>
 
           <button
-            className={`px-4 py-2 rounded ${
-              mode === "account" ? "bg-white text-black" : "bg-neutral-700"
-            }`}
-            onClick={() => setMode("account")}
+            onClick={payNow}
+            style={{
+              marginTop: 20,
+              background: "#cc1010",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: 8,
+              border: "none",
+            }}
           >
-            Compte
+            Procéder au paiement →
           </button>
-        </div>
-      </div>
-
-      {/* MODE COMPTE */}
-      {mode === "account" && (
-        <div className="mb-6">
-          <p className="mb-2 text-neutral-400">
-            Entrez votre identifiant utilisateur (userId)
-          </p>
-          <input
-            type="text"
-            placeholder="Votre ID"
-            className="w-full p-2 rounded bg-neutral-800"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-          />
         </div>
       )}
-
-      <button
-        onClick={submitOrder}
-        className="px-6 py-3 bg-white text-black rounded-lg hover:bg-neutral-300 transition"
-      >
-        Valider la commande
-      </button>
-    </div>
+    </main>
   );
 }
