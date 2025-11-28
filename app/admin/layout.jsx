@@ -1,23 +1,8 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
 export default function AdminLayout({ children }) {
-  const router = useRouter();
-  const [auth, setAuth] = useState(false);
-
-  useEffect(() => {
-    const ok = localStorage.getItem("nv_admin_auth") === "true";
-
-    if (!ok) {
-      router.push("/admin/login");
-    } else {
-      setAuth(true);
-    }
-  }, []);
-
-  if (!auth) return null;
-
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen bg-black text-white px-6 py-10">
+      <h1 className="text-3xl font-bold mb-10 text-red-600">Admin</h1>
+      <div className="max-w-4xl">{children}</div>
+    </div>
+  );
 }
