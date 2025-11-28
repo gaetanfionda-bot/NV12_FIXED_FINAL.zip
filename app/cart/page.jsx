@@ -6,12 +6,53 @@ export default function CartPage() {
   const [cart, setCart] = useState([]);
   const delivery = 3.5;
 
-  // Chargement du panier depuis localStorage
+  // Chargement + ajout automatique ?add=
   useEffect(() => {
+    // Récupérer paramètres URL
+    const params = new URLSearchParams(window.location.search);
+    const addId = params.get("add");
+
+    // Charger panier existant
     const stored = localStorage.getItem("nv_cart");
-    if (stored) {
-      setCart(JSON.parse(stored));
+    let cartData = stored ? JSON.parse(stored) : [];
+
+    // Si URL contient ?add=xxxx → ajouter l’item
+    if (addId) {
+      const exists = cartData.find((item) => item.id === addId);
+      if (!exists) {
+        // Ajouter item temporaire (sera mis à jour après)
+        cartData.push({
+          id: addId,
+          name: addId,
+          price: 0,
+        });
+      }
+
+      // Sauvegarde
+      localStorage.setItem("nv_cart", JSON.stringify(cartData));
     }
+
+    setCart(cartData);
+
+    // Mettre à jour infos produits (prix + nom)
+    async function updateItems() {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+
+        const updated = cartData.map((item) => {
+          const p = data.products.find((x) => x.id === item.id);
+          return p ? p : item;
+        });
+
+        setCart(updated);
+        localStorage.setItem("nv_cart", JSON.stringify(updated));
+      } catch (e) {
+        console.error("Erreur chargement produits:", e);
+      }
+    }
+
+    updateItems();
   }, []);
 
   // Suppression d’un produit
@@ -21,8 +62,8 @@ export default function CartPage() {
     localStorage.setItem("nv_cart", JSON.stringify(updated));
   }
 
-  // Total panier
-  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  // Totaux
+  const subtotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
   const total = subtotal + (cart.length > 0 ? delivery : 0);
 
   return (
@@ -62,7 +103,6 @@ export default function CartPage() {
         ))}
       </div>
 
-      {/* Totaux */}
       {cart.length > 0 && (
         <div style={{ marginTop: 30 }}>
           <p>Sous-total : {subtotal.toFixed(2)} €</p>
