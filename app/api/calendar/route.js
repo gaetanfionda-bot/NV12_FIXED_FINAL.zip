@@ -1,0 +1,1 @@
+// Calendar API route placeholder
