@@ -8,34 +8,45 @@ export default function AdminPage() {
       </p>
 
       <div className="grid gap-10 max-w-4xl">
+        
+        {/* Produits */}
         <div className="p-6 border border-white/10 rounded-xl bg-neutral-900">
           <h2 className="text-2xl font-semibold mb-2">📦 Produits</h2>
-          <p className="text-neutral-400 mb-4">Gérer les produits du shop.</p>
+          <p className="text-neutral-400 mb-4">
+            Gérer les produits du shop.
+          </p>
           <a href="/admin/products" className="underline">
             Accéder aux produits
           </a>
         </div>
 
+        {/* Commandes */}
         <div className="p-6 border border-white/10 rounded-xl bg-neutral-900">
-          <h2 className="text-2xl font-semibold mb-2">🧾 Commandes</h2>
-          <p className="text-neutral-400 mb-4">Suivi et gestion des commandes.</p>
+          <h2 className="text-2xl font-semibold mb-2">📑 Commandes</h2>
+          <p className="text-neutral-400 mb-4">
+            Suivi et gestion des commandes.
+          </p>
           <a href="/admin/orders" className="underline">
             Accéder aux commandes
           </a>
         </div>
 
+        {/* Calendrier */}
         <div className="p-6 border border-white/10 rounded-xl bg-neutral-900">
           <h2 className="text-2xl font-semibold mb-2">📅 Calendrier</h2>
-          <p className="text-neutral-400 mb-4">Évènements et réservations.</p>
+          <p className="text-neutral-400 mb-4">
+            Événements et réservations.
+          </p>
           <a href="/admin/calendar" className="underline">
             Voir le calendrier
           </a>
         </div>
 
+        {/* Roulette promo */}
         <div className="p-6 border border-white/10 rounded-xl bg-neutral-900">
-          <h2 className="text-2xl font-semibold mb-2">🎰 Roulette Promo</h2>
+          <h2 className="text-2xl font-semibold mb-2">🎡 Roulette Promo</h2>
           <p className="text-neutral-400 mb-4">
-            Gestion des probabilités, résultats, récompenses.
+            Gestion des probabilités, résultats et récompenses.
           </p>
           <a href="/admin/roulette" className="underline">
             Accéder à la roulette
