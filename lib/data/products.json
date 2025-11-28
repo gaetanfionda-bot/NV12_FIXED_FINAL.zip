@@ -1,1 +1,22 @@
-{"products": []}
+{
+  "products": [
+    {
+      "id": "nv001",
+      "slug": "nv001",
+      "name": "Night Vision NV-001",
+      "price": 129,
+      "published": true,
+      "description": "Modèle NV-001 - Lunettes Night Vision édition spéciale.",
+      "images": [
+        "/products/nv001_1.jpg",
+        "/products/nv001_2.jpg"
+      ]
+    },
+    {
+      "id": "nv002",
+      "slug": "nv002",
+      "name": "Night Vision NV-002",
+      "price": 149,
+      "published": true,
+      "description": "Modèle NV-002 - Version légère et améliorée.",
+      "images"
