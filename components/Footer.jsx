@@ -1,7 +1,15 @@
 export default function Footer() {
   return (
-    <footer className="w-full py-10 mt-20 text-center border-t border-white/10 text-sm text-neutral-400">
-      <p>© {new Date().getFullYear()} NIGHT VISION — All rights reserved.</p>
+    <footer
+      style={{
+        marginTop: 60,
+        padding: 20,
+        textAlign: "center",
+        borderTop: "1px solid #222",
+        color: "#888",
+      }}
+    >
+      © {new Date().getFullYear()} NIGHT VISION — Tous droits réservés.
     </footer>
   );
 }
