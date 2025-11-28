@@ -1,50 +1,38 @@
-"use client";
+import { getAdminProducts } from "@/lib/admin-db";
 
-import Link from "next/link";
-import { getAdminProducts } from "@/lib/admin-db.js";
-
-export default function AdminProducts() {
-  const products = getAdminProducts();
+export default async function AdminProducts() {
+  const products = await getAdminProducts();
 
   return (
-    <div className="px-6 py-16">
-      <h1 className="text-4xl font-bold mb-10">Produits</h1>
+    <main style={{ padding: 40 }}>
+      <h1>Produits</h1>
 
-      <Link
+      <a
         href="/admin/products/new"
-        className="px-4 py-2 bg-white text-black rounded mb-6 inline-block"
+        style={{
+          display: "inline-block",
+          marginBottom: 20,
+          background: "#cc1010",
+          padding: "8px 14px",
+          color: "white",
+          borderRadius: 6,
+        }}
       >
         Ajouter un produit
-      </Link>
+      </a>
 
-      <div className="space-y-6 mt-6">
+      {products.length === 0 && <p>Aucun produit.</p>}
+
+      <ul style={{ marginTop: 20 }}>
         {products.map((p) => (
-          <div
-            key={p.id}
-            className="border border-white/10 bg-neutral-900 p-4 rounded-xl flex justify-between items-center"
-          >
-            <div>
-              <h2 className="text-xl">{p.name}</h2>
-              <p className="text-neutral-400">
-                {p.price}€ — Stock : {p.stock}
-              </p>
-            </div>
-
-            <div className="flex gap-4">
-              <Link href={`/admin/products/${p.id}`} className="text-blue-400">
-                Modifier
-              </Link>
-
-              <Link
-                href={`/admin/products/delete/${p.id}`}
-                className="text-red-400"
-              >
-                Supprimer
-              </Link>
-            </div>
-          </div>
+          <li key={p.id} style={{ marginBottom: 10 }}>
+            <strong>{p.name}</strong> – {p.price} €
+            <br/>
+            <a href={`/admin/products/${p.id}`}>Modifier</a> |
+            <a href={`/admin/products/delete/${p.id}`}> Supprimer</a>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </main>
   );
 }
