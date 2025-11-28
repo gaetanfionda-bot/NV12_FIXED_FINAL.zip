@@ -1,12 +1,12 @@
 import { getProductBySlug } from "@/lib/db";
+import TryOn3D from "@/components/TryOn3D";
 
 export default async function ProductPage({ params }) {
   const { slug } = params;
 
-  // On récupère le produit correspondant au slug
+  // Charger le produit
   const product = await getProductBySlug(slug);
 
-  // Sécurisation : slug incorrect ou produit inexistant
   if (!product) {
     return (
       <main style={{ padding: 40 }}>
@@ -20,7 +20,11 @@ export default async function ProductPage({ params }) {
   return (
     <main style={{ padding: 40 }}>
       <h1>{product.name}</h1>
+
+      {/* Description */}
       <p style={{ marginTop: 10 }}>{product.description}</p>
+
+      {/* Prix */}
       <p style={{ marginTop: 10, fontSize: "1.4rem" }}>
         <strong>{product.price} €</strong>
       </p>
@@ -36,6 +40,7 @@ export default async function ProductPage({ params }) {
               width: "300px",
               borderRadius: "10px",
               marginBottom: "20px",
+              display: "block",
             }}
           />
         ))}
@@ -56,7 +61,13 @@ export default async function ProductPage({ params }) {
         Ajouter au panier
       </a>
 
-      <div style={{ marginTop: 20 }}>
+      {/* TRY-ON 3D */}
+      <h2 style={{ marginTop: 40 }}>Try-On 3D</h2>
+
+      <TryOn3D src={`/models/${product.id}.glb`} />
+
+      {/* Retour */}
+      <div style={{ marginTop: 30 }}>
         <a href="/shop">← Retour au shop</a>
       </div>
     </main>
