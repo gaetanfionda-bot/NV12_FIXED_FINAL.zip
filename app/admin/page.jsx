@@ -1,30 +1,14 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-export default function AdminLoginPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Accès direct sans mot de passe
-    router.replace("/admin");
-  }, [router]);
-
+// app/admin/page.jsx
+export default function AdminHome() {
   return (
-    <div style={{
-      width: "100vw",
-      height: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      flexDirection: "column",
-      background: "black",
-      color: "white",
-      fontSize: "2rem"
-    }}>
-      <div>ACCÈS ADMIN…</div>
-      <div style={{ fontSize: "1rem", marginTop: "1rem" }}>Redirection en cours…</div>
+    <div style={{ padding: "40px", color: "#fff" }}>
+      <h1 style={{ fontSize: "32px", color: "#cc1010" }}>Dashboard Admin</h1>
+      <p>Accès direct sans mot de passe.</p>
+
+      <ul style={{ marginTop: "20px", lineHeight: "32px" }}>
+        <li><a href="/admin/products">📦 Gérer les produits</a></li>
+        <li><a href="/admin/orders">🧾 Gérer les commandes</a></li>
+      </ul>
     </div>
   );
 }
