@@ -8,7 +8,7 @@ export async function POST(request) {
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
   if (!ADMIN_PASSWORD) {
-    console.error("❌ ADMIN_PASSWORD n'est pas défini dans Vercel !");
+    console.error("❌ ADMIN_PASSWORD is missing");
     return NextResponse.json(
       { success: false, message: "Config error" },
       { status: 500 }
